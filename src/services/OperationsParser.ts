@@ -1,6 +1,7 @@
 import {OperationsStack} from '@/models/OperationsStack';
 import {SpankParser} from '@/parsers/SpankParser';
 import {QuotesParser} from '@/parsers/QuotesParser';
+import {CodeIterator} from '@/models/CodeIterator';
 
 export namespace OperationsParser {
 
@@ -9,9 +10,11 @@ export namespace OperationsParser {
     const operationsStack: OperationsStack = new OperationsStack();
     const result: OperationsStack = new OperationsStack();
 
-    for (const char of code) {
-      SpankParser.SpankParser(operationsStack, char, result);
-      QuotesParser.QuotesParser(operationsStack, char, result);
+    const codeIterator = new CodeIterator(code);
+
+    while (codeIterator.iterate()) {
+      SpankParser.SpankParser(operationsStack, codeIterator, result);
+      QuotesParser.QuotesParser(operationsStack, codeIterator, result);
     }
 
     return result;

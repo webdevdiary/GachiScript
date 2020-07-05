@@ -1,64 +1,39 @@
-import {Accumulator} from '@/models/Accumulator';
 import {OperationsStack} from '@/models/OperationsStack';
 import {GachiOperationsEnum} from '@/enums/GachiOperationsEnum';
 import {GachiOperation} from '@/models/GachiOperation';
-import {ParsingStatusEnum} from '@/enums/ParsingStatusEnum';
 import {OperationsParser} from '@/services/OperationsParser';
+import {CodeIterator} from '@/models/CodeIterator';
 
 export namespace SpankParser {
 
-  const accumulator: Accumulator = new Accumulator();
-
   export const SpankParser = (
     operationsStack: OperationsStack,
-    char: string,
+    codeIterator: CodeIterator,
     result: OperationsStack
   ): void => {
 
     try {
 
-      if ((accumulator.getValue() === GachiOperationsEnum.SPANK) && !operationsStack.getLast()) {
+      if (codeIterator.isOperation(GachiOperationsEnum.SPANK)) {
         operationsStack.push(new GachiOperation(GachiOperationsEnum.SPANK));
-        accumulator.clear();
+        operationsStack.getLast().startParsing();
+        return;
       }
 
       if (operationsStack.getLast() && (operationsStack.getLast().getOperationKey() === GachiOperationsEnum.SPANK)) {
 
-        if ((operationsStack.getLast().getParsingStatus() === ParsingStatusEnum.NOT_PARSED) && (char === '(')) {
-          operationsStack.getLast().startParsing();
-          operationsStack.getLast().mergeIntoParsingData({
-            '(': (operationsStack.getLast().getParsingData()['('] as number || 0) + 1,
-          });
-          accumulator.clear();
+        const codeBetween = codeIterator.getCodeBetween('(', ')');
+
+        if (codeIterator.getChar() === ' ') {
           return;
-        }
-
-        if ((operationsStack.getLast().getParsingStatus() === ParsingStatusEnum.IS_PARSING) && (char === ')')) {
-
-          operationsStack.getLast().mergeIntoParsingData({
-            ')': (operationsStack.getLast().getParsingData()[')'] as number || 0) + 1,
-          });
-
-          if (operationsStack.getLast().getParsingData()['('] === operationsStack.getLast().getParsingData()[')']) {
-            operationsStack.getLast().finishParsing();
-            operationsStack.getLast().setSuboperations(OperationsParser.parseCode(accumulator.getValue()));
-            accumulator.clear();
-          }
+        } else if (codeBetween !== false) {
+          operationsStack.getLast().finishParsing();
+          operationsStack.getLast().setSuboperations(OperationsParser.parseCode(codeBetween as string));
           result.push(operationsStack.pop());
-          return;
-        }
-
-        if (operationsStack.getLast().getParsingStatus() === ParsingStatusEnum.NOT_PARSED) {
-          if (char === ' ') {
-            accumulator.clear();
-            return;
-          } else {
-            throw new Error(`unexpected symbol "${char}"`)
-          }
+        } else {
+          throw new Error(`unexpected symbol "${codeIterator.getChar()}"`)
         }
       }
-
-      accumulator.append(char);
 
     } catch (e) {
       throw new Error(`src/parsers/SpankParser.ts -> SpankParser: ${e.stack}`);

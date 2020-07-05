@@ -36,7 +36,7 @@ export class Transpiler {
     for (const operation of operationsStack.getArray()) {
 
       if (operation.getOperationKey() === GachiOperationsEnum.SPANK) {
-        javaScriptCode += `alert(${this.generateJavaScriptCode(operation.getSuboperations())})`;
+        javaScriptCode += `alert(${this.generateJavaScriptCode(operation.getSuboperations())});`;
       }
 
       if (operation.getOperationKey() === GachiOperationsEnum.SINGLE_QUOTE) {
