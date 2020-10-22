@@ -2,10 +2,10 @@
 A programming language that transpiles to JavaScript
 
 ## Current state
-There is only two functions:
+There are only two functions:
 ```GachiScript
 itTurnsMeOn (slave = document, punishment = 'dblclick')
-  spank('your text here')
+  spank ('your text here')
 ```
 The JavaScript result will be:
 ```js
