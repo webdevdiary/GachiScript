@@ -1,3 +1,4 @@
-spank ('Ass we can!')
-spank ('Ass we can!')
-spank ('Ass we can!')
+itTurnsMeOn (slave = document, punishment = 'dblclick')
+  spank ('Ass we can!')
+itTurnsMeOn (slave = window, punishment = 'contextmenu')
+  spank ('Come on, college boy!')

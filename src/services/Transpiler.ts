@@ -42,6 +42,12 @@ export class Transpiler {
       if (operation.getOperationKey() === GachiOperationsEnum.SINGLE_QUOTE) {
         javaScriptCode += `'${operation.getValue()}'`;
       }
+
+      if (operation.getOperationKey() === GachiOperationsEnum.IT_TURNS_ME_ON) {
+        javaScriptCode += `${operation.getParsingData().slave}.`
+          + `addEventListener(${operation.getParsingData().punishment},`
+          + `function(){${this.generateJavaScriptCode(operation.getSuboperations())}});`;
+      }
     }
 
     return javaScriptCode;

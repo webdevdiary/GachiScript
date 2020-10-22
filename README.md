@@ -2,13 +2,14 @@
 A programming language that transpiles to JavaScript
 
 ## Current state
-There is only one function:
+There is only two functions:
 ```GachiScript
-spank('your text here')
+itTurnsMeOn (slave = document, punishment = 'dblclick')
+  spank('your text here')
 ```
 The JavaScript result will be:
 ```js
-alert('your text here')
+document.addEventListener('dblclick',function(){alert('your text here');});
 ```
 
 ## How to try current state
@@ -32,6 +33,10 @@ $ npm run transpile -- gachiModule="examples/HelloWorld" outputDir="examples/Hel
 # lint ts files
 $ npm run lint
 ```
+
+## About syntax
+
+GachiScript has the indentation like Python (current time it's two whitespaces)
 
 
 About project & team
